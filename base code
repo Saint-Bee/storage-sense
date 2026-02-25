@@ -1,0 +1,9 @@
+# file scaner o show exactly what is using all the storage space
+#
+# Logan Seeley 
+#
+# Feburary 24 2026  10:36 PM EST
+#
+
+print (" hello user, the following is what is using up the space on your storage from most to least") 
+
