@@ -4,6 +4,58 @@
 #
 # Feburary 24 2026  10:36 PM EST
 #
+import shutil
+import os
 
-print (" hello user, the following is what is using up the space on your storage from most to least") 
+total, used, free = shutil.disk_usage("/")
 
+print (" Hello user, the following is a list of what is using up the space on your storage from largest to Smallest") 
+
+
+print(f"Total: {total // (2**30)} GB")
+print(f"Used:  {used // (2**30)} GB")
+print(f"Free:  {free // (2**30)} GB"
+
+
+# Set target directory (e.g., /Applications on macOS/Linux or Program Files on Windows)
+TARGET_DIR = "/Applications" 
+
+def get_folder_size(folder_path):
+    """Recursively calculate folder size in bytes."""
+    total_size = 0
+    try:
+        for dirpath, dirnames, filenames in os.walk(folder_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                # Skip broken symlinks
+                if os.path.exists(fp):
+                    total_size += os.path.getsize(fp)
+    except Exception:
+        return 0
+    return total_size
+
+def scan_applications(base_dir):
+    """Scans base directory and lists app sizes sorted largest to smallest."""
+    app_sizes = []
+    
+    print(f"Scanning {base_dir}...")
+    for item in os.listdir(base_dir):
+        item_path = os.path.join(base_dir, item)
+        
+        if os.path.isdir(item_path):
+            size_bytes = get_folder_size(item_path)
+            size_gb = size_bytes / (1024 ** 3)
+            app_sizes.append((item, size_gb))
+            
+    # Sort by size descending
+    app_sizes.sort(key=lambda x: x[1], reverse=True)
+    
+    # Print top 10 largest
+    for app, size in app_sizes[:10]:
+        print(f"{app}: {size:.2f} GB")
+
+if __name__ == "__main__":
+    if os.path.exists(TARGET_DIR):
+        scan_applications(TARGET_DIR)
+    else:
+        print("Directory does not exist. Change TARGET_DIR to a valid path.")
